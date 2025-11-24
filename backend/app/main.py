@@ -31,7 +31,8 @@ async def add_emoji(file: UploadFile = File(...)):
         cmd = [
             "ffmpeg",
             "-y",
-            "-i", input_path,
+            "-i",
+            input_path,
             "-vf",
             (
                 "drawtext=text='😀':"
@@ -40,12 +41,18 @@ async def add_emoji(file: UploadFile = File(...)):
                 "x=(w-text_w)/2:y=(h-text_h)/2:"
                 "fontcolor=white"
             ),
-            "-codec:a", "copy",
+            "-codec:a",
+            "copy",
             output_path,
         ]
 
         try:
-            subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(
+                cmd,
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
         except subprocess.CalledProcessError:
             raise HTTPException(status_code=500, detail="ffmpeg processing error")
 
