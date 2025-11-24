@@ -1,0 +1,23 @@
+## Быстрый запуск
+
+1. Скопировать `.env.example` в `.env` и указать реальный `TELEGRAM_BOT_TOKEN`.
+
+2. **Windows**:
+   - запустить `run.bat` (двойной клик);
+   - перейти на `http://localhost`;
+   - для остановки — `stop.bat`.
+
+3. **Linux/macOS**:
+   ```bash
+   ./run.sh
+   # ...
+   ./stop.sh
+
+  (не забывать выдавать права через линукс chmod +x run.sh и chmod +x stop.sh)
+
+После этого любой, кто скачал репо (ZIP или `git clone`), делает:
+
+- правит `.env`,
+- запускает `run.bat` / `run.sh`,
+- и может сразу тестить фронт + бота.
+::contentReference[oaicite:0]{index=0}
