@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Добавить эмодзи в центр видео</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 16px;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+    button {
+      margin-top: 12px;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Добавить эмодзи в центр видео</h1>
+
+  <form id="form">
+    <input type="file" id="file-input" accept="video/mp4" required />
+    <br />
+    <button type="submit">Добавить 🙂</button>
+  </form>
+
+  <p id="status"></p>
+
+  <div id="result" style="display:none;">
+    <h2>Результат</h2>
+    <video id="video" controls style="width: 100%; height: auto;"></video>
+    <p><a id="download" download="output.mp4">Скачать файл</a></p>
+  </div>
+
+  <script>
+    const form = document.getElementById('form');
+    const fileInput = document.getElementById('file-input');
+    const statusEl = document.getElementById('status');
+    const resultBlock = document.getElementById('result');
+    const videoEl = document.getElementById('video');
+    const downloadEl = document.getElementById('download');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      statusEl.textContent = 'Загружаю и обрабатываю видео...';
+      resultBlock.style.display = 'none';
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const resp = await fetch('/api/add-emoji', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!resp.ok) {
+          const text = await resp.text();
+          statusEl.textContent = 'Ошибка: ' + text;
+          return;
+        }
+
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        videoEl.src = url;
+        downloadEl.href = url;
+        resultBlock.style.display = 'block';
+        statusEl.textContent = 'Готово ✅';
+      } catch (e) {
+        console.error(e);
+        statusEl.textContent = 'Произошла ошибка при запросе к серверу';
+      }
+    });
+  </script>
+</body>
+</html>
